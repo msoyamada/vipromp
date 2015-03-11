@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#for ((i = 64; i <= 16384; i = i+i))
+#do
+#	for ((j=256; j <= 8192; j = j+j))
+#	do
+
+# Simplescalar Parameters
+# Exec1 w/ Parameters
+#cp main_sc_4jpeg.cpp main_sc.cpp
+#make
+./vipro-mp -cache:dl1 dl1:1024:32:4:l -cache:il1 il1:2048:32:1:l -config configure \
+jpeg_shared/cjpegP1 -dct int -outfile output256.jpeg input256.ppm \
+jpeg_shared/cjpegP2 jpeg_shared/cjpegP3 jpeg_shared/cjpegP4 \
+4 dumps/4p_256
+ 
+#./sim-outorder-mp -cache:dl1 dl1:1024:32:4:l -cache:il1 il1:2048:32:1:l -config configure \
+#jpeg_shared/cjpegP1 -dct int -outfile output512.jpeg input512.ppm \
+#jpeg_shared/cjpegP2 jpeg_shared/cjpegP3 jpeg_shared/cjpegP4 \
+#4 p4_512_300Mhz
+#	done
+#done

@@ -1,0 +1,376 @@
+#include<stdio.h>
+#include "dma.hpp"
+#include "../SSpp-mips/machine.hpp"
+#include "../SSpp-mips/memory.hpp"
+#include "../bus/simple_bus_tools.hpp"
+
+word_t dma::spec_mem_read(md_addr_t addr){
+	return mem[translate_addr(addr)];
+}
+
+/* convert addr of simplescalar memory to dma registers position */
+md_addr_t dma::translate_addr(md_addr_t addr){
+	return addr-low;
+}
+
+void dma::print_mem(unsigned int addr_low, unsigned int addr_high){
+	addr_low  = (addr_low  == 0)? low  : addr_low;
+	addr_high = (addr_high == 0)? high : addr_high;
+
+	for (unsigned int i = addr_low-low; i < addr_high-low+1; i++){
+		if (mem[i] != 0){
+			printf("[0x%X] > %d \n", i+low, mem[i]);
+		}
+	}
+}
+
+int dma::get_latency(){
+	return latency;
+}
+
+simple_bus_status dma::read(void *host, unsigned int addr, unsigned int nbytes){
+	
+	sc_assert(addr <= high);
+	sc_assert((high-addr+1)%4 == 0);
+
+	reg_access_count++;
+
+	if (m_wait_count == 0){
+		m_wait_count++;
+		byte_t *p = (byte_t*) host;
+		switch (nbytes){
+		case 1:
+			*((byte_t *)p) = mem[translate_addr(addr)];
+			p[1] = 0;
+			p[2] = 0;
+			p[3] = 0;
+			break;
+		case 2:
+			p[0] = (byte_t) mem[translate_addr(addr)];
+			p[1] = (byte_t) mem[translate_addr(addr)+ 1] ;
+			p[2] = 0;
+			p[3] = 0;
+			break;
+		case 4:
+		case 8:
+			p[0] = (byte_t) mem[translate_addr(addr)];
+			p[1] = (byte_t) mem[translate_addr(addr)+ 1] ;
+			p[2] = (byte_t) mem[translate_addr(addr)+ 2] ;
+			p[3] = (byte_t) mem[translate_addr(addr)+ 3] ;
+			break;
+		}
+		m_wait_count--;
+	        return SIMPLE_BUS_OK;
+	}else{
+		return SIMPLE_BUS_WAIT;
+	}
+}
+
+simple_bus_status dma::write(void *host, unsigned int addr, unsigned int nbytes){
+	
+	sc_assert(addr <= high);
+	sc_assert((high-addr+1)%4 == 0);
+
+	if(addr == auto_run){
+		request(((unsigned int *)host)[0]);
+		return SIMPLE_BUS_OK;
+	}
+
+	reg_access_count++;
+
+	if (m_wait_count == 0){
+		m_wait_count++;
+		byte_t *p = (byte_t*) host;
+
+		switch (nbytes){
+		case 1:
+			mem[translate_addr(addr)] = *((byte_t *)p);
+			break;
+		case 2:
+		 	mem[translate_addr(addr)] 	= (byte_t) p[0];
+		 	mem[translate_addr(addr) + 1] = (byte_t) p[1];
+		case 4:
+		case 8:
+			mem[translate_addr(addr)] 	= (byte_t) p[0];
+			mem[translate_addr(addr) + 1] = (byte_t) p[1];
+			mem[translate_addr(addr) + 2] = (byte_t) p[2];
+			mem[translate_addr(addr) + 3] = (byte_t) p[3];
+			break;
+		}
+
+		m_wait_count--;
+		return SIMPLE_BUS_OK;
+	}else{
+		return SIMPLE_BUS_WAIT;
+	}
+}
+
+int dma::get_latency(unsigned int address){
+
+   return latency;
+}
+
+void dma::exit_now(){
+  /* un-initialize the simulator */
+  SIM0->sim_uninit();
+  SIM0->free_objs();
+  SIM0 = NULL;
+
+  SIM1->sim_uninit();
+  SIM1->free_objs();
+  SIM1 = NULL;
+
+  SIM2->sim_uninit();
+  SIM2->free_objs();
+  SIM2 = NULL;
+
+  SIM3->sim_uninit();
+  SIM3->free_objs();
+  SIM3 = NULL;
+
+  SIM4->sim_uninit();
+  SIM4->free_objs();
+  SIM4 = NULL;
+
+  SIM5->sim_uninit();
+  SIM5->free_objs();
+  SIM5 = NULL;
+
+  SIM6->sim_uninit();
+  SIM6->free_objs();
+  SIM6 = NULL;
+
+  SIM7->sim_uninit();
+  SIM7->free_objs();
+  SIM7 = NULL;
+
+  SIM8->sim_uninit();
+  SIM8->free_objs();
+  SIM8 = NULL;
+	
+  printf("** Exit dma and SystemC simulation *** """);
+}
+
+void dma::set_Interrupt(){
+	//setInterruptMode();
+	SIM0->interrupt = true;
+	//SIM0->interrupt = false;
+}
+
+bool dma::request(unsigned int ss_priority){
+	int first_pos;
+	int *host;
+	host = (int *)malloc(sizeof(int *));
+	simple_dma_request *request = new simple_dma_request;
+
+	first_pos = ((sizeof(int)*(ss_priority-1)*7));					// select the channel for read
+	
+	read(host, first_pos+(0*sizeof(int))+low, sizeof(int));				//read addr	
+	request->addr = host[0];									
+	
+	read(host, first_pos+(1*sizeof(int))+low, sizeof(int));				//read nbytes
+	request->nbytes = host[0];
+	
+	read(host, first_pos+(2*sizeof(int))+low, sizeof(int));				//read ntbytes
+	request->ntbytes = host[0];
+	
+	read(host, first_pos+(3*sizeof(int))+low, sizeof(int));				//operation for read or write
+	if(host[0] == 0){
+		request->do_read = true;
+	}else{
+		request->do_read = false;
+	}
+	
+	request->priority = ss_priority;						//priority this
+
+	read(host, first_pos+(5*sizeof(int))+low, sizeof(int));				//read Point for write
+	request->p_write = host[0];
+	
+	read(host, first_pos+(6*sizeof(int))+low, sizeof(int));				//read Point for write
+	request->channel_status = host[0];
+
+	request->status = SIMPLE_DMA_REQUEST;
+	m_requests.push_back(request);
+	
+	return true;
+}
+
+void dma::main_action(){
+  for(;;){
+   if(!m_current_request){
+     m_current_request = get_next_request();
+   }
+   if(m_current_request){
+	if(m_current_request->status == SIMPLE_DMA_REQUEST){
+          dma_work();
+	  set_Interrupt();
+        }
+   }
+   wait();
+  }
+}
+
+void dma::dma_work(){
+  int *host, *hothost, i = 0;
+  unsigned int adds, aux, first_pos;
+  host = (int *)malloc(sizeof(int *));
+
+  m_current_request->status = SIMPLE_DMA_WAIT;
+  printf(" DMA_WORK \n" );
+  fflush(stdout);
+  
+  channel = m_current_request->priority; 						// which is the channel
+  set_SIM0(channel);									// set the desired SIM
+ 
+  if(m_current_request->channel_status == 1){						// channel is set
+
+    addr = m_current_request->addr;			// addr
+
+    nbytes = m_current_request->nbytes;			// nbytes
+
+    ntbytes = m_current_request->ntbytes;		// total bytes
+
+    do_read = m_current_request->do_read;		// read or write
+
+    priority = m_current_request->priority;		// priority
+
+    p_write = m_current_request->p_write;		//pointer for write
+	
+    if((addr >= 0x80000000) && (p_write >= 0x80000000)){				//menshared_access
+      if(do_read){
+	for(i = 0; i < ntbytes; i ++){
+	  hothost = (int *)malloc(sizeof(int *));
+	  while(bus_port->read_ss(addr, hothost, nbytes, 15, false) != SIMPLE_BUS_OK);	//read in menshared memory
+	  adds = (unsigned int)(p_write+(i*nbytes));
+	  while(bus_port->write_ss(adds, hothost, nbytes, 15, false) != SIMPLE_BUS_OK);	//write in menshared memory
+	  addr = addr + nbytes;
+	}
+      }else{
+	for(i = 0; i < ntbytes; i ++){
+	  hothost = (int *)malloc(sizeof(int *));
+	  adds = (unsigned int)(p_write + (i*nbytes));
+	  while(bus_port->read_ss(adds, hothost, nbytes, 15, false) != SIMPLE_BUS_OK);	//read in menshared memory
+	  while(bus_port->write_ss(addr, hothost, nbytes, 15, false) != SIMPLE_BUS_OK);	//write in menshared memory
+	  addr = addr + nbytes;
+	}
+      }
+    }else{
+       if((addr >= 0x80000000) && (p_write < 0x80000000)){			 	//menshared X private access
+	 if(do_read){
+	   for(i = 0; i < ntbytes; i ++){
+	     hothost = (int *)malloc(sizeof(int *));
+	     while(bus_port->read_ss(addr, hothost, nbytes, 15, false) != SIMPLE_BUS_OK);  //read in menshared memory
+	     adds = p_write + (i*nbytes);
+	     while(SIM0->mem_write(adds, 0, nbytes, hothost) != md_fault_none);		 //write private memory
+	     addr = addr + nbytes;
+	   }
+         }else{
+	   for(i = 0; i < ntbytes; i ++){
+	     hothost = (int *)malloc(sizeof(int *));
+	     adds = p_write + (i*nbytes);
+	     while(SIM0->mem_read(adds, 0, nbytes, hothost) != md_fault_none);   	 //read private memory
+	     while(bus_port->write_ss(addr, hothost, nbytes, 15, false) != SIMPLE_BUS_OK); //write in menshared memory
+	     addr = addr + nbytes;
+	   }
+	 }
+       }else{
+	 if((addr < 0x80000000) && (((int)(host[0])) >= 0x80000000)){			   //private X menshared access
+	   if(do_read){									   //memory access
+	     for(i = 0; i < ntbytes; i ++){
+	       hothost = (int *)malloc(sizeof(int *));
+	       while(SIM0->mem_read(addr, 0, nbytes, hothost) != md_fault_none);	   //read private memory
+	       adds = p_write + (i*nbytes);	
+	       while(bus_port->write_ss(adds, hothost, nbytes, 15, false) != SIMPLE_BUS_OK); //write in menshared memory
+	       addr = addr + nbytes;
+	     }
+	   }else{
+	     for(i = 0; i < ntbytes; i ++){
+	       hothost = (int *)malloc(sizeof(int *));
+	       adds = p_write + (i*nbytes);
+	       while(bus_port->read_ss(adds, hothost, nbytes, 15, false) != SIMPLE_BUS_OK); //read in menshared memory
+	       while(SIM0->mem_write(addr, 0, nbytes, hothost) != md_fault_none);	  //write private memory
+	       addr = addr + nbytes;
+	     }
+	   }
+	 }else{
+	   if((addr < 0x80000000) && (p_write < 0x80000000)){			  	  //private memory access
+	     if(do_read){
+		for(i = 0; i < ntbytes; i ++){
+		  adds = p_write + (i*nbytes);
+		  while(SIM0->mem_read(addr, adds, nbytes, NULL) != md_fault_none);
+	  	  addr = addr + nbytes;
+		}
+	     }else{
+		for(i = 0; i < ntbytes; i ++){
+		  adds = p_write + (i*nbytes);
+		  while(SIM0->mem_write(addr, adds, nbytes, NULL) != md_fault_none);
+	  	  addr = addr + nbytes;
+		}
+	     }
+	   }
+	}
+      }
+    }
+    m_current_request->channel_status = 0;
+    m_current_request->status = SIMPLE_DMA_OK;
+    m_current_request = (simple_dma_request *)0;
+  }
+}
+
+simple_dma_request * dma::get_next_request(){
+  
+  simple_dma_request_vec Q;
+  for (int i = 0; i < m_requests.size(); i++){
+      simple_dma_request *request = m_requests[i];
+      if ((request->status == SIMPLE_DMA_REQUEST) || (request->status == SIMPLE_DMA_WAIT)){
+	Q.push_back(request);
+      }
+  }
+
+  if (Q.size() > 0){
+    return arbiter_port->arbitrate(Q);
+  }
+  return (simple_dma_request *)0;
+
+}
+
+void dma::set_SIM0(int ID){			// what the SIM
+	switch(ID){
+		case 1:{
+			SIM0 = SIM1;
+			break;
+		}
+		case 2:{
+			SIM0 = SIM2;
+			break;
+		}
+		case 3:{
+			SIM0 = SIM3;
+			break;
+		}
+		case 4:{
+			SIM0 = SIM4;
+			break;
+		}
+		case 5:{
+			SIM0 = SIM5;
+			break;
+		}
+		case 6:{
+			SIM0 = SIM6;
+			break;
+		}
+		case 7:{
+			SIM0 = SIM7;
+			break;
+		}
+		case 8:{
+			SIM0 = SIM8;
+			break;
+		}
+		default:{
+			SIM0 = SIM1;
+			break;
+		}
+	}
+}

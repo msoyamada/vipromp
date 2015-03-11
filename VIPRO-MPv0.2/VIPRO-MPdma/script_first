@@ -1,0 +1,12 @@
+#!/bin/bash
+
+for ((i = 64; i <= 16384; i = i+i))
+do
+	for ((j=256; j <= 16384; j = j+j))
+	do
+        ./sim-outorder-mp \
+        -cache:dl1 dl1:$i:32:4:l -cache:il1 il1:$j:32:1:l -config configure \
+        jpeg1 jpeg2 \
+        dump_$i-$j.txt
+	done
+done

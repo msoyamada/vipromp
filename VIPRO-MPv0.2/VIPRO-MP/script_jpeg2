@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#for ((i = 64; i <= 16384; i = i+i))
+#do
+#	for ((j=256; j <= 8192; j = j+j))
+#	do
+
+# Simplescalar Parameters
+# Exec1 w/ Parameters
+#cp main_sc_2jpeg.cpp main_sc.cpp
+#make
+./vipro-mp -cache:dl1 dl1:2048:32:4:l -cache:il1 il1:4096:32:1:l -config configure \
+jpeg_shared/cjpegP1 -dct int -outfile output256.jpeg input256.ppm \
+jpeg_shared/cjpegP2 \
+2 dumps/2p_256
+
+
+#	done
+#done

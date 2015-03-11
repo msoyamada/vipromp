@@ -1,0 +1,29 @@
+
+OBJS =	main_sc.o  sc_simplescalar.o sim-outorder.o simplescalar.o syscall.o memory.o regs.o \
+	loader.o endian.o symbol.o global.o	\
+	eval.o options.o stats.o eio.o \
+	range.o misc.o power.o \
+	machine.o cache.o bpred.o resource.o ptrace.o \
+	libexo.o
+
+
+CXX = g++-3.4
+#CFLAGS =  -g
+#LFLAGS =  -g
+#CFLAGS =  -O3
+#LFLAGS =  -O3
+AFLAGS = -Wall -w -g -lm -x c++
+#CFLAGS =  
+LFLAGS =  -Wall -w -g  -Xlinker -zmuldefs -L/root/systemc-2.0.1/lib-linux/ -L/root/sim-wattch-systemc  
+CXXFLAGS = -g -I /root/systemc-2.0.1/include  
+
+.o:	$*.cpp
+	$(CXX) $(CFLAGS)  -c $*.cpp
+
+
+all:	sim-outorder
+
+sim-outorder:	$(OBJS)
+		$(CXX) $(LFLAGS) -o sim-outorder-mp $(OBJS) libexo/exolex.o -lfl -lsystemc -lm
+
+

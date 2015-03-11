@@ -1,0 +1,193 @@
+#ifndef __dma_h
+#define __dma_h
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <setjmp.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/time.h>
+//#include <bfd.h>
+
+
+#include "../SSpp-mips/machine.hpp"
+#include "../SSpp-mips/host.hpp"
+#include "../SSpp-mips/memory.hpp"
+#include "../SSpp-mips/sim.hpp"
+#include "../SSpp-mips/simplescalar.hpp"
+
+#include "../memoryshared.hpp"
+#include "../bus/simple_bus_blocking_if.hpp"
+#include "../bus/simple_bus_slave_if.hpp"
+#include "../bus/simple_bus_arbiter.hpp"
+#include "../bus/simple_bus_tools.hpp"
+
+/*MSK (03/12/2008) including bus port*/
+#include "simple_dma_blocking_if.hpp"
+#include "simple_dma_arbiter.hpp"
+#include "simple_d.hpp"
+
+#include <systemc.h>
+
+class dma
+  : public simple_bus_slave_if
+  , public sc_module
+{
+public:
+	sc_in_clk clock;
+	sc_port<simple_bus_blocking_if> bus_port;
+	sc_port<simple_d_if> arbiter_port;
+
+	SC_HAS_PROCESS(dma);
+
+	// constructor
+	dma(sc_module_name name_
+	    , bool use
+	    , unsigned int low_limit
+	    , unsigned int high_limit
+	    , int _latency = 18)
+	    : sc_module(name_)
+	    , in_use(use){
+		SC_CTHREAD(main_action, clock.pos());
+		in_use = false;
+		addr = 0;
+		nbytes = 0;
+		ntbytes = 0;
+		do_read = false;
+		priority = 0;
+		p_write = 0;
+		channel = 1;
+	
+		latency = _latency;
+		auto_run = 0x90000100;	//this position indicate the activation the dma
+
+		reg_access_count = 0;
+		
+		sc_assert(low_limit <= high_limit);
+		sc_assert((high_limit-low_limit+1)%4 == 0);
+
+		latency = _latency;
+
+		size = (high_limit - low_limit + 1);
+		low = low_limit;
+		high = high_limit;
+
+		/* allocate dma registers*/
+		mem = new unsigned char [size];
+
+		m_wait_count = 0;
+	
+		for (int i = 0; i < size; i++){
+			mem[i] = 0;
+		}
+	}
+
+	// process
+	void main_action();
+
+	bool request(unsigned int ss_priority);
+
+	void dma_work();
+
+	simple_bus_status read(void *host, unsigned int addr, unsigned int nbytes);
+	
+	simple_bus_status write(void *host, unsigned int addr, unsigned int nbytes);
+
+	int get_latency(unsigned int address);
+
+	void set_SIM0(int ID);
+
+	void aloc_sim(sim* SIM, int ID){
+		switch(ID){
+			case 1:{
+				SIM1 = SIM;
+				break;
+			}
+			case 2:{
+				SIM2 = SIM;
+				break;
+			}
+			case 3:{
+				SIM3 = SIM;
+				break;
+			}
+			case 4:{
+				SIM4 = SIM;
+				break;
+			}
+			case 5:{
+				SIM5 = SIM;
+				break;
+			}
+			case 6:{
+				SIM6 = SIM;
+				break;
+			}
+			case 7:{
+				SIM7 = SIM;
+				break;
+			}
+			case 8:{
+				SIM8 = SIM;
+				break;
+			}
+			default:{
+				SIM1 = SIM;
+				break;
+			}
+		}
+	}
+	
+	word_t spec_mem_read(md_addr_t addr);
+
+	md_addr_t translate_addr(md_addr_t addr);
+
+	md_addr_t getLowLimit (void) { return low; };
+	md_addr_t getHighLimit(void) { return high; };
+
+	void print_mem(unsigned int addr_low = 0, unsigned int addr_high = 0);
+	
+	int get_latency();
+
+	void set_Interrupt();
+
+private:
+
+	simple_dma_request * get_next_request();
+
+	void exit_now();
+
+private:
+	bool in_use;
+	unsigned int addr;
+	int nbytes;
+	int ntbytes;
+	bool do_read;
+	int priority;
+	unsigned int p_write;
+	int channel;
+	simple_dma_request_vec m_requests;
+	simple_dma_request *m_current_request;
+	sim *SIM0;
+	sim *SIM1;
+	sim *SIM2;
+	sim *SIM3;
+	sim *SIM4;
+	sim *SIM5;
+	sim *SIM6;
+	sim *SIM7;
+	sim *SIM8;
+	int latency;
+	unsigned char *mem;
+	unsigned int size;
+	md_addr_t low, high, auto_run;
+	int m_wait_count;
+	int reg_access_count;
+
+};
+
+#endif
+

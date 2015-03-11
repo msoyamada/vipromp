@@ -1,0 +1,76 @@
+		SystemC Class Library (Rel. 2.0.1)
+                ==================================
+
+This is the production release of the SystemC 2.0.1 Class Library.
+
+-------------------------------------------------------------------------------
+				IMPORTANT
+
+1. This is the production release of SystemC 2.0.1. This release contains bug
+   fixes for SystemC 2.0 Production as well as several other code changes,
+   and it includes the simple bus example, an example of modeling a bus
+   at the transaction level.
+
+2. This release is supported on the following platforms for which it has
+   been well tested:
+    o Sun Solaris 2.7 and 2.8 with GNU C++ compiler versions gcc-2.95.2 and
+      gcc-2.95.3
+    o Sun Solaris 2.7 and 2.8 with SUN C++ compiler versions SC6.1 and SC6.2
+    o Linux (Redhat 6.2) with GNU C++ compiler versions gcc-2.95.2 and
+      gcc-2.95.3
+    o Linux (Redhat 7.2) with GNU C++ compiler version gcc-2.95.3
+    o HP-UX 11.00 with HP C++ compiler versions A.03.15 and A.03.33
+      (Note: +O1 is the highest safe optimization level)
+    o Windows NT 4.0 (SP6a) with VC++ 6.0 (SP5)
+
+3. From this release onwards, a SystemC regression test suite is also
+   released. The SystemC regression test suite is released separately.
+
+-------------------------------------------------------------------------------
+
+For details, see the separate RELEASENOTES file.
+
+
+Licensing and Copyright
+
+   See the separate LICENSE file to determine your rights
+   and responsiblities for using SystemC.
+
+User Documentation
+
+   You can find documentation for this release in the docs directory.
+
+Installation
+
+   See the separate INSTALL file that provides system
+   information and installation instructions.
+
+Release Notes
+
+   See the separate RELEASENOTES file that provides upto date
+   information about this release of SystemC.
+
+Additional information
+
+   SystemC has a web site at
+
+       http://www.systemc.org
+     
+   Discussion forum: http://www.systemc.org/login_forum.html
+
+   You can post the bugs and suggestions of general interest to the forum.
+   When reporting bugs please specify the following information (if
+   applicable):
+
+     1) SystemC version 
+     2) platform, compiler, flags 
+     3) description of the problem 
+     4) steps to reproduce the problem 
+     5) compile/runtime warnings and errors 
+     6) code sample, not more than 100 lines to demonstrate the problem 
+
+   Note: All bugs will only be tested against the latest publicly available 
+   version of the product. 
+   Note: All C++ compilers that SystemC supports have bugs of different
+   degree of severity. We cannot fix those bugs. Please report them to
+   the compiler vendor.

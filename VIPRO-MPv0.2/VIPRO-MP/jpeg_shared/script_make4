@@ -1,0 +1,8 @@
+#!/bin/bash
+
+rm -rf cjpegP1 cjpegP2 cjpegP3 cjpegP4  *.o
+make -f MakefileP1.simple 
+make -f MakefileP2.simple
+make -f MakefileP3.simple
+make -f MakefileP4.simple
+

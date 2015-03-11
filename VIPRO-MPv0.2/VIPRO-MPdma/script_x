@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#for ((i = 64; i <= 16384; i = i+i))
+#do
+#	for ((j=256; j <= 16384; j = j+j))
+#	do
+./vipro-mp -cache:dl1 dl1:128:32:4:l -cache:il1 il1:512:32:1:l -config configure \
+x
+#	done
+#done

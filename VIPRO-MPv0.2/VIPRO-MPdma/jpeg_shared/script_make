@@ -1,0 +1,6 @@
+#!/bin/bash
+
+rm -rf cjpegP1 cjpegP2 *.o
+make -f MakefileP1.simple 
+make -f MakefileP2.simple
+
