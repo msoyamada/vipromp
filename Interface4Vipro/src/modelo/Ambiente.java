@@ -63,7 +63,7 @@ public class Ambiente {
             saida.println("CC  = gcc");
             saida.println("AFLAGS = -Wall -w -g");
             saida.println("#CFLAGS =  ");
-            saida.println("VIPRO_DIR= /home/vipro/VIPRO-MPv0.2/VIPRO-MP/");
+            saida.println("VIPRO_DIR= /home/vipro/vipromp/VIPRO-MPv0.2/VIPRO-MP/");
             saida.println("LFLAGS =   -L$(VIPRO_DIR) -L$(VIPRO_DIR)systemc-2.3.1/lib-linux -Wall -w -g -lm -Xlinker -zmuldefs -lpthread");
             saida.println("CXXFLAGS=-g -I$(VIPRO_DIR) -I$(VIPRO_DIR)systemc-2.3.1/include -DSYSTEMC -fpermissive");
             saida.println("MFLAGS = `./sysprobe -flags`");
@@ -157,8 +157,8 @@ public class Ambiente {
             int n_procs = 0;
             for (int i = 0; i < compsNaTela.size(); i++) if (compsNaTela.get(i).getCompType().equals("processador")) n_procs++;
 
-            saida.println("./vipro-mp -config -dct int -outfile " + n_procs + " \\");
-            comandoExec = "./vipro-mp -config -dct int -outfile " + n_procs + " \\";
+            saida.println("./vipro-mp -config  \\");
+            comandoExec = "./vipro-mp -config  \\";
 
             for (int i = 0; i < compsNaTela.size(); i++) if (compsNaTela.get(i).getCompType().equals("processador")){
 
@@ -260,8 +260,16 @@ public class Ambiente {
 
 		aux = compsNaTela.get(i);
 		if (aux.getCompType().equals("processador")){
-
-		    if (cont == 1){
+                   //MSO I will need the rewrite this function
+                    if (cont == 1){
+                        saida.println("     const int argc1 =4;");                                	
+                        saida.println("     char *argv1[argc1] = {argv[0],argv[1],argv[2], argv[3]};");
+                    }else {
+                        // PROC2
+                        saida.println("     const int argc2 = 4;");
+                        saida.println("     char *argv2[argc2] = {argv[0],argv[1],argv[4],argv[5]};");
+                    }
+		   /* if (cont == 1){
 
 			saida.println("	    const int argc" + cont + " = 10;");
 			saida.println("	    char *argv1[argc1] = {argv[0],argv[1],argv[" + contador++ +"],argv[" + contador++ +"], argv[2], argv[3],");
@@ -273,7 +281,7 @@ public class Ambiente {
 			saida.println("	    char *argv" + cont + "[argc" + cont + "] = {argv[0],argv[1],argv[" + contador++ +"],argv[" + contador++ +"], argv[2], argv[3],");
 			saida.println("			  argv[4],argv[" + contador++ +"],argv[" + contador++ +"]};");
 
-		    }
+		    }*/
 
                     saida.println("");
 	            cont++;
@@ -344,7 +352,7 @@ public class Ambiente {
 	    }
 
             saida.println("	cout << \"Starting\";");
-            saida.println("	sc_start(3e8, SC_NS);							// iniciando o clock e todas as threads");
+            saida.println("	sc_start(4e9, SC_NS);							// iniciando o clock e todas as threads");
             saida.println("	cout << \"Finished SystemC simulation\" << endl;");
             saida.println("	sc_stop();");
             saida.println("");
@@ -1060,8 +1068,8 @@ public class Ambiente {
                     retorno += auxLeu + ":&:";
 
                     for (int i = 6; i < leu.length; i++){
-                        
-                        if (i == 20) caracs.add(leu[i++] + " " + leu[i++] + " " + leu[i++] + " " + leu[i]);
+                        System.out.println("i ="+i+" value="+ leu[i]);
+                        if (i == 20) caracs.add(leu[i++] + " " + leu[i++] + " " + leu[i++] + " " + leu[i]);                     
                         else if (i == 60) caracs.add(leu[i++] + " " + leu[i++] + " " + leu[i++] + " " + leu[i]);
                         else if (i == 26) caracs.add(leu[i++] + " " + leu[i]);
                         else if (i == 54) caracs.add(leu[i++] + " " + leu[i]);

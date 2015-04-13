@@ -631,7 +631,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
 	}
 
-        Controlador.controlador("/home/pardal/Desktop/Saida_sai/:&:newDir");
+        Controlador.controlador("/home/vipro/testes/Projeto/:&:newDir");
 
     }//GEN-LAST:event_AbrirProjetoActionPerformed
 
