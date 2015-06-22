@@ -76,6 +76,8 @@ simplescalar::orphan_fn(int i, int argc, char **argv)
 
 #endif
 
+
+
 void simplescalar::refresh()
 {
 	for (;;)
@@ -158,6 +160,18 @@ simplescalar::exit_now(int exit_code)
   /* MSO:(06/06/2008) now exit from the SystemC simulation */
    cout <<  "** ExitNow: SystemC simulation time *** "  << sc_simulation_time() << endl;
    //cout <<  "** ExitNow: SystemC simulation time stamp time *** "  << sc_time_stamp() << endl;
+
+   // MSO, stop simulation no more processors
+   cout << "instance_number " << simplescalar::instance_number << endl;   
+   simplescalar::instance_number--;
+   cout << "instance_number  decrease" << simplescalar::instance_number << endl;   
+   fflush(stdout);
+   if (simplescalar::instance_number ==0){
+      cout << "No more processors sc_stop";
+      
+      sc_stop();
+   }
+
    halt();
   /* MSO: halt= stop this processor (or, execute nops ?!?!),
      Ok, in a MPSoC probably we will turnoff or decrease the frequency of this processor */
@@ -165,12 +179,16 @@ simplescalar::exit_now(int exit_code)
   /* all done! */
 //  exit(exit_code);
 }
+int simplescalar::instance_number=0;
+
 
 int
 simplescalar::execute(int argc, char **argv, char **envp)
 {
   char *s;
   int i, exit_code;
+
+  simplescalar::instance_number++;
 
 #if 0
 #ifndef _MSC_VER

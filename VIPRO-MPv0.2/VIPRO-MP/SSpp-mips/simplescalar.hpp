@@ -31,6 +31,8 @@ class simplescalar
 {
 
 	public:
+		//MSO instance number
+		static int instance_number;
 		sc_in_clk CLK;
 		sc_in<bool> reset;   //handle it?
 
