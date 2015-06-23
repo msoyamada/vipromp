@@ -157,7 +157,7 @@ public class Ambiente {
             int n_procs = 0;
             for (int i = 0; i < compsNaTela.size(); i++) if (compsNaTela.get(i).getCompType().equals("processador")) n_procs++;
 
-            saida.println("./vipro-mp -config  \\");
+            saida.println("./vipro-mp -config -dct int -outfile 2 \\");
             comandoExec = "./vipro-mp -config  \\";
 
             for (int i = 0; i < compsNaTela.size(); i++) if (compsNaTela.get(i).getCompType().equals("processador")){
@@ -261,27 +261,29 @@ public class Ambiente {
 		aux = compsNaTela.get(i);
 		if (aux.getCompType().equals("processador")){
                    //MSO I will need the rewrite this function
-                    if (cont == 1){
+                 /*   if (cont == 1){
                         saida.println("     const int argc1 =4;");                                	
                         saida.println("     char *argv1[argc1] = {argv[0],argv[1],argv[2], argv[3]};");
                     }else {
                         // PROC2
                         saida.println("     const int argc2 = 4;");
                         saida.println("     char *argv2[argc2] = {argv[0],argv[1],argv[4],argv[5]};");
-                    }
-		   /* if (cont == 1){
+                    }*/
+                    
+                    
+		   if (cont == 1){
 
 			saida.println("	    const int argc" + cont + " = 10;");
-			saida.println("	    char *argv1[argc1] = {argv[0],argv[1],argv[" + contador++ +"],argv[" + contador++ +"], argv[2], argv[3],");
-			saida.println("			  argv[4],argv[" + contador++ +"],argv[" + contador++ +"], argv[5]};");
+			saida.println("	    char *argv1[argc1] = {argv[0],argv[1],argv[6],argv[7], argv[2], argv[3],");
+			saida.println("			  argv[4],argv[8],argv[9], argv[5]};");
 			
 		    }else{
 
 			saida.println("	    const int argc" + cont + " = 9;");
-			saida.println("	    char *argv" + cont + "[argc" + cont + "] = {argv[0],argv[1],argv[" + contador++ +"],argv[" + contador++ +"], argv[2], argv[3],");
-			saida.println("			  argv[4],argv[" + contador++ +"],argv[" + contador++ +"]};");
+			saida.println("	    char *argv" + cont + "[argc" + cont + "] = {argv[0],argv[1],argv[10],argv[11], argv[2], argv[3],");
+			saida.println("			  argv[4],argv[12],argv[13]};");
 
-		    }*/
+		    }
 
                     saida.println("");
 	            cont++;
@@ -1370,6 +1372,30 @@ public class Ambiente {
 
     }
 
+    public static String getDescText(){
+
+        String Desc = "";
+
+        for (int i = 0; i < compsNaTela.size(); i++){
+
+            //System.out.println(i + " " + compsNaTela.get(i) + compsNaTela.get(i).getCompType());
+            Desc += i + ":" + compsNaTela.get(i).getCompName() + ":" + compsNaTela.get(i).getCompType() ;
+
+            if (compsNaTela.get(i).getCompType().equals("processador")){
+
+                for (int z = 28; z <= 45; z++)
+                    //System.out.println("    - " + z + " " + compsNaTela.get(i).getCarac().get(z));
+                    Desc += ":" + compsNaTela.get(i).getCarac().get(z);
+            }
+
+
+        }
+
+        return Desc;
+
+    }
+
+        
     public static String getCaracByPos(int pos, String type){
 
         if (type.equals("processador")){

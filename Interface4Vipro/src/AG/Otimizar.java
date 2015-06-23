@@ -85,8 +85,10 @@ public class Otimizar
             BackPropagationMLP bcPotencia = new BackPropagationMLP(redePotencia, taxaAprendizagem, momento);
             BackPropagationMLP bcDesempen = new BackPropagationMLP(redeDesempen, taxaAprendizagem, momento);
 
-            sDir = "/home/pardal/Desktop/AlgoritmosGeneticos/";
+            //sDir = "/home/pardal/Desktop/AlgoritmosGeneticos/";
+            sDir = "/home/vipro/testes/AlgoritmosGeneticos/";
 
+            
             File Log = new File(sDir + "Log");
             LogOut = new PrintWriter(new FileWriter(Log));
 
@@ -208,7 +210,8 @@ public class Otimizar
                                         desempenho = Double.parseDouble(leu[pos]) / Math.pow(10, 8);
 
                                     auxLeu = in.readLine();
-                                    for(leu = auxLeu.split(" "); !auxLeu.split(" ")[0].equals("avg_total_power_cycle"); leu = auxLeu.split(" "))
+                                    //MSO: changed to cc2
+                                    for(leu = auxLeu.split(" "); !auxLeu.split(" ")[0].equals("avg_total_power_cycle_cc2"); leu = auxLeu.split(" "))
                                         auxLeu = in.readLine();
 
                                     for(pos = 1; leu[pos].trim().equals(""); pos++);
@@ -232,8 +235,9 @@ public class Otimizar
                                 desempenho = 99;
 
                             }
-
-                            saidaPareto.println((desempenho * Math.pow(10, 8)) + ":" + (potencia * 100000.00));
+                            //Saida_" + mem + "_" + unFun + "_" + cacheil + "_" + cachedl + "_" + scalar+"_"+ cont +
+                            //saidaPareto.println((desempenho * Math.pow(10, 8)) + ":" + (potencia * 100000.00));
+                            saidaPareto.println((Ambiente.getDescText()+"_"+desempenho * Math.pow(10, 8)) + ":" + (potencia * 100000.00));
                             saidaPareto.flush();
 
                             in.close();
@@ -344,9 +348,10 @@ public class Otimizar
 
                         indAux = new Vector((Vector)populacao.get(ind));
                         arqAux = makeVet(indAux, false);
-
+                        
                         arqAux.add(potencia);
                         arqAux.add(desempenho);
+                        
                         puttyInBD(arqAux);
                         LogOut.flush();
 

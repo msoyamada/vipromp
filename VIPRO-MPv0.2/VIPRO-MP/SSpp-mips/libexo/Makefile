@@ -8,8 +8,7 @@ LEX	= flex
 #
 SRC	= libexo.c exolex.l
 HDR	= libexo.h
-OEXT= o
-LEXT= a
+
 #
 # common objects
 #
