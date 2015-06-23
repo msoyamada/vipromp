@@ -137,10 +137,10 @@ public class Otimizar
                         LogOut.println("Arquitetura já simulada:");
                         LogOut.println("Protencia Media......." + potencia);
                         LogOut.println("Desempenho............" + desempenho);
-                        LogOut.println("Fitness..............." + (potencia + desempenho) + "\n\n\n");
+                        LogOut.println("Fitness..............." + Math.sqrt(Math.pow(potencia,2) + Math.pow(desempenho,2))+ "\n\n\n");
                         System.out.println("individuo: " + (ind + 1) + ", fitness:" + (potencia + desempenho) + "\n");                        
                         
-                        Fitness.add(potencia + desempenho);
+                        Fitness.add(Math.sqrt(Math.pow(potencia,2) + Math.pow(desempenho,2)));
                         LogOut.flush();
                         continue;
 
@@ -195,6 +195,7 @@ public class Otimizar
 
                             try{
 
+                                saidaPareto.println(Ambiente.getDescText());
                                 for(int procs = 0; procs < numProc; procs++){
 
                                     String auxLeu = in.readLine();
@@ -206,8 +207,10 @@ public class Otimizar
 
                                     for(pos = 1; leu[pos].trim().equals(""); pos++);
 
-                                    if(Double.parseDouble(leu[pos]) / Math.pow(10, 8)> desempenho)
-                                        desempenho = Double.parseDouble(leu[pos]) / Math.pow(10, 8);
+                                    // reading performance 
+                                    // MSO: do not normalize
+                                    //if(Double.parseDouble(leu[pos]) > desempenho)
+                                    desempenho = Double.parseDouble(leu[pos]);
 
                                     auxLeu = in.readLine();
                                     //MSO: changed to cc2
@@ -216,12 +219,14 @@ public class Otimizar
 
                                     for(pos = 1; leu[pos].trim().equals(""); pos++);
 
+                                    // MSO: do not normalize. 
                                     if(Double.parseDouble(leu[pos])> 0.0){
-                                        potencia += Double.parseDouble(leu[pos]) / 100000.00;
+                                        potencia += Double.parseDouble(leu[pos]) ;
                                     } else {
                                         LogOut.println("ERRO, potencia acima do suportado. Individuo " + ind + " geracao " + gerac + " processador " + procs);
-                                        potencia += 999999999 / numProc;
+                                        potencia = 999999999 ;
                                     }
+                                    saidaPareto.print(":"+desempenho + ":" + potencia);
 
                                 }
 
@@ -231,18 +236,17 @@ public class Otimizar
 
                             if(potencia <= 0.0 || desempenho <= 0.0){
 
-                                potencia = 99;
-                                desempenho = 99;
+                                potencia = 999999999;
+                                desempenho = 99999999;
 
                             }
                             //Saida_" + mem + "_" + unFun + "_" + cacheil + "_" + cachedl + "_" + scalar+"_"+ cont +
                             //saidaPareto.println((desempenho * Math.pow(10, 8)) + ":" + (potencia * 100000.00));
-                            saidaPareto.println((Ambiente.getDescText()+"_"+desempenho * Math.pow(10, 8)) + ":" + (potencia * 100000.00));
+                           saidaPareto.println(); 
                             saidaPareto.flush();
 
                             in.close();
-                            potencia /= numProc;
-                            
+                                                        
                             } catch(IOException e) {
                                 LogOut.println("Erro ao Ler: " + gerac + "_" + ind + "\n");
                             }
@@ -337,14 +341,14 @@ public class Otimizar
                             System.out.println("Utilizando Redes Neurais");
 
                         }
-
+                        // MSO: lets use the distance to origin (0,0) as the fitness function
                         LogOut.println("Resultados:");
-                        LogOut.println("Protencia Media......." + potencia * 100000);
-                        LogOut.println("Desempenho............" + desempenho * Math.pow(10, 8));
-                        LogOut.println("Fitness..............." + (potencia + desempenho) + "\n\n\n");
+                        LogOut.println("Protencia Media......." + potencia );
+                        LogOut.println("Desempenho............" + desempenho);
+                        LogOut.println("Fitness..............." + Math.sqrt(Math.pow(potencia,2) + Math.pow(desempenho,2)) + "\n\n\n");
                         System.out.println("individuo: " + (ind + 1) + ", fitness:" + (potencia + desempenho) + "\n");                        
                         
-                        Fitness.add(potencia + desempenho);
+                        Fitness.add(Math.sqrt(Math.pow(potencia,2) + Math.pow(desempenho,2)));
 
                         indAux = new Vector((Vector)populacao.get(ind));
                         arqAux = makeVet(indAux, false);
@@ -462,8 +466,8 @@ public class Otimizar
         } finally {
 
             LogOut.println("\n\nMelhor arquitetura foi encontrada na geração: " + OtimaArquitetura.getGerac());
-            LogOut.println("Melhor potência: " + (OtimaArquitetura.getPotencia() * 100000));
-            LogOut.println("Melhor Desempenho: " + (OtimaArquitetura.getDesempenho() * Math.pow(10, 8)));
+            LogOut.println("Melhor potência: " + (OtimaArquitetura.getPotencia()));
+            LogOut.println("Melhor Desempenho: " + (OtimaArquitetura.getDesempenho() ));
             LogOut.close();
             showDados.close();
             saidaPareto.close();
