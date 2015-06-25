@@ -221,7 +221,7 @@ public class Otimizar
 
                                     // MSO: do not normalize. 
                                     if(Double.parseDouble(leu[pos])> 0.0){
-                                        potencia += Double.parseDouble(leu[pos]) ;
+                                        potencia = Double.parseDouble(leu[pos]) ;
                                     } else {
                                         LogOut.println("ERRO, potencia acima do suportado. Individuo " + ind + " geracao " + gerac + " processador " + procs);
                                         potencia = 999999999 ;
@@ -519,50 +519,62 @@ public class Otimizar
 
             proc = new inScreen((inScreen)ind.get(i));
             proc.setCarac(((inScreen)ind.get(i)).getCarac());
+            
+            //BP
+           // proc.getCarac().setElementAt(Ele(5, 7), 13); //#13 BP bimodal table size default 512  range 128 - 4096         
+           // proc.getCarac().setElementAt(Ele(5, 7) + " 1" , 17); //#17 BTB config default 512 1   range 128 - 4096
 
-            proc.getCarac().setElementAt(Ele(7, 5), 13);
-            proc.getCarac().setElementAt(Ele(7, 5) + " " + Ele(2, 0), 17);
-            proc.getCarac().setElementAt(Ele(6, 0), 19);
-            proc.getCarac().setElementAt(Ele(6, 0), 21);
-            proc.getCarac().setElementAt(Ele(6, 0), 22);
+            //Scalarity
+           // proc.getCarac().setElementAt(Ele(5, 1), 19);  // #19 IF queue size 2 to 64
+            //MSO: scalarity is the same for ID, II, IC range 1 to 8
+            long scalarity= Ele(3, 0); 
+            proc.getCarac().setElementAt(scalarity, 21);  // #21 ID size 4
+            proc.getCarac().setElementAt(scalarity, 22);  // #22 II size 4
 
             if(Ele(10, 0)> 4L)
-                proc.getCarac().setElementAt("true", 23);
+                proc.getCarac().setElementAt("true", 23);  // #23 In-order
             else
-                proc.getCarac().setElementAt("false", 23);
+                proc.getCarac().setElementAt("false", 23); // #23 Out-of-order
 
-            proc.getCarac().setElementAt(Ele(6, 0), 25);
-            proc.getCarac().setElementAt(Ele(5, 3), 26);
-            proc.getCarac().setElementAt(Ele(5, 3), 27);
-            proc.getCarac().setElementAt(Uni(7, 1), 28);
-            proc.getCarac().setElementAt(Uni(7, 1), 29);
-            proc.getCarac().setElementAt(Uni(1, 1), 30);
-            proc.getCarac().setElementAt(Uni(7, 1), 31);
-            proc.getCarac().setElementAt(Uni(7, 1), 32);
+            proc.getCarac().setElementAt(scalarity, 25);  // #25 IC size 4
+            proc.getCarac().setElementAt(Ele(5, 2), 26);  // #26 RUU size 16 range 4 to 128
+            proc.getCarac().setElementAt(Ele(5, 2), 27);  // #27 LS size 16 range 4 to 128
+            
+            //Functional units
+            proc.getCarac().setElementAt(Uni(7, 1), 28); // #28 ALU  1  to 8
+           // proc.getCarac().setElementAt(Uni(7, 1), 29); // #29 MULT/DIV 1 to 8
+           // proc.getCarac().setElementAt(Uni(1, 1), 30); // #30 MEM ports 2 to 8
+           // proc.getCarac().setElementAt(Uni(7, 1), 31); // #31 FP 1 to 8
+           // proc.getCarac().setElementAt(Uni(7, 1), 32); // #32 FP Mult 1 to 8
 
-            int par1 = (int) Ele(13, 3);
-            int par2 = (int) Ele(3, 3);
-
-            proc.getCarac().setElementAt("il1:" + par1 + ":" + par2 + ":1:l", 33);
-            while ((par1 * par2) > 4194304){
+            
+            // cache
+            int par1 = (int) Ele(13, 3); // #blocks range 8 to 64K
+            //int par2 = (int) Ele(3, 3);  // # block size 8 to 64
+            int par2 = 32;  // # block size fixed to 32
+            proc.getCarac().setElementAt("il1:" + par1 + ":" + par2 + ":1:l", 33); //# il1 config
+            /*while ((par1 * par2) > 4194304){  
 
                 par1 = (int) Ele(13, 3);
                 par2 = (int) Ele(3, 3);
 
                 proc.getCarac().setElementAt("il1:" + par1 + ":" + par2 + ":1:l", 33);
 
-            }
-
-            int dl = (int) Math.round(Math.random());
+            }*/
+            // cache associativity
+            int dl;
+            /*dl = (int) Math.round(Math.random());
             if (dl == 0) dl = 1;
-            else dl = 4;
-
-            par1 = (int) Ele(13, 3);
-            par2 = (int) Ele(3, 3);
-
+            else dl = 4;*/
+            dl= 4; // MSO fixed to 4
+             
+            par1 = (int) Ele(13, 3); // #blocks
+            //par2 = (int) Ele(3, 3);  // # block size
+            par2 = 32;  // # block size fixed to 32
+            
             proc.getCarac().setElementAt("dl1:" + par1 + ":" + par2 + ":" + dl + ":l", 35);
             
-            while ((par1 * par2 * dl) > 4194304){
+     /*       while ((par1 * par2 * dl) > 4194304){
             
                 dl = (int) Math.round(Math.random());            
                 if (dl == 0) dl = 1;
@@ -573,14 +585,15 @@ public class Otimizar
             
                 proc.getCarac().setElementAt("dl1:" + par1 + ":" + par2 + ":" + dl + ":l", 35);
                 
-            }
+            }*/
 
 
-
-            proc.getCarac().setElementAt(Duni(10, 8) + " 2", 44);
-            proc.getCarac().setElementAt("itlb1:" + Ele(6, 8) + ":4096:4:l", 46);
-            proc.getCarac().setElementAt("dtlb1:" + Ele(6, 8) + ":4096:4:l", 47);
-            proc.getCarac().setElementAt(Uni(50, 50), 48);
+           // memort latency MSO fixed
+            proc.getCarac().setElementAt("18 2", 44); // latency 18 2
+            proc.getCarac().setElementAt("8", 45); // bus width
+            proc.getCarac().setElementAt("itlb1:4096:4096:4:l", 46); // itlb itlb1:4096:4096:4:l
+            proc.getCarac().setElementAt("dtlb1:4096:4096:4:l", 47); // dtlb dtlb1:4096:4096:4:l
+            proc.getCarac().setElementAt("70", 48); // #48 memory latency 70
             newInd.add(proc);
 
         }

@@ -1383,9 +1383,9 @@ public class Ambiente {
 
             if (compsNaTela.get(i).getCompType().equals("processador")){
 
-                for (int z = 28; z <= 45; z++)
+                for (int z = 11; z <= 45; z++)
                     //System.out.println("    - " + z + " " + compsNaTela.get(i).getCarac().get(z));
-                    Desc += ":" + compsNaTela.get(i).getCarac().get(z);
+                    Desc += ":" + compsNaTela.get(i).getCarac().get(z)+":";
             }
 
 

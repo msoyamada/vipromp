@@ -64,7 +64,6 @@ int sc_main(int argc, char *argv[]){
 	scsp2.reset(reset);
 
 	cout << "Starting";
-	//sc_start(clock,3e8);							// iniciando o clock e todas as threads
 	sc_start(3e8, SC_NS);							// iniciando o clock e todas as threads
 	cout << "Finished SystemC simulation" << endl;
 	sc_stop();

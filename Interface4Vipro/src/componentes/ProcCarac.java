@@ -1520,70 +1520,70 @@ public class ProcCarac extends javax.swing.JFrame {
 
         Vector caracs = new Vector();
 
-        caracs.add(ger1.getText()); //0
-        caracs.add(ger2.getText()); //1
-        caracs.add(ger3.getText()); //2
-        caracs.add(ger4.getText()); //3
-        caracs.add(ger5.getText()); //4
-        caracs.add(ger6.getText()); //5
-        caracs.add(ger7.getText()); //6
-        caracs.add(ger8.getText()); //7
-        caracs.add(ger9.getText()); //8
-        caracs.add(ger10.getText()); //9
-        caracs.add(ger11.getText()); //10
+        caracs.add(ger1.getText()); //0 random number 2
+        caracs.add(ger2.getText()); //1 initialize false
+        caracs.add(ger3.getText()); //2 restore EIO null
+        caracs.add(ger4.getText()); //3 redirect simulator output null
+        caracs.add(ger5.getText()); //4 redirect program output null
+        caracs.add(ger6.getText()); //5 simulator schedling priority 0 
+        caracs.add(ger7.getText()); //6 max # instructions 0
+        caracs.add(ger8.getText()); //7 # skip inst 0
+        caracs.add(ger9.getText()); //8 pipetrace null
+        caracs.add(ger10.getText()); //9 profile null
+        caracs.add(ger11.getText()); //10 backward false
 
-        caracs.add(bp1.getText());  //11
-        caracs.add(bp2.getText()); //12
-        caracs.add(bp3.getText()); //13
-        caracs.add(bp4.getText()); //14
-        caracs.add(bp5.getText()); //15
-        caracs.add(bp6.getText()); //16
-        caracs.add(bp7.getText()); //17
+        caracs.add(bp1.getText()); //11 extra miss lat 3
+        caracs.add(bp2.getText()); //12 bp type bimodal
+        caracs.add(bp3.getText()); //13 bimodal table size 512
+        caracs.add(bp4.getText()); //14 2-level bp config 1 1024 8 0
+        caracs.add(bp5.getText()); //15 bp meta_table_size 1024
+        caracs.add(bp6.getText()); //16 return address 8
+        caracs.add(bp7.getText()); //17 BTB config 512 1
 
-        caracs.add(cg1.getText()); //18
-        caracs.add(cg2.getText()); //19
-        caracs.add(cg3.getText()); //20
-        caracs.add(cg4.getText()); //21
-        caracs.add(cg5.getText()); //22
-        caracs.add(cg6.getText()); //23
-        caracs.add(cg7.getText()); //24
-        caracs.add(cg8.getText()); //25
-        caracs.add(cg9.getText()); //26
-        caracs.add(cg10.getText()); //27
+        caracs.add(cg1.getText()); //18 speed of front end 1
+        caracs.add(cg2.getText()); //19 instruction fetch queue size 4
+        caracs.add(cg3.getText()); //20 speculative update null
+        caracs.add(cg4.getText()); //21 ID 4
+        caracs.add(cg5.getText()); //22 IISSUE 4
+        caracs.add(cg6.getText()); //23 in-order false
+        caracs.add(cg7.getText()); //24 issue insts wrong execution true
+        caracs.add(cg8.getText()); //25 Icommit 4
+        caracs.add(cg9.getText()); //26 RUU size 16
+        caracs.add(cg10.getText()); //27 LS size 16
 
-        caracs.add(uf1.getText()); //28
-        caracs.add(uf2.getText()); //29
-        caracs.add(uf3.getText()); //30
-        caracs.add(uf4.getText()); //31
-        caracs.add(uf5.getText()); //32
+        caracs.add(uf1.getText()); //28 ALU 1
+        caracs.add(uf2.getText()); //29 MULT/DIV 1
+        caracs.add(uf3.getText()); //30 MEM port 2
+        caracs.add(uf4.getText()); //31 FP 2
+        caracs.add(uf5.getText()); //32 FP MULT 1
 
-        caracs.add(cachel11.getText()); //33
-        caracs.add(cachel12.getText()); //34
-        caracs.add(cachel13.getText()); //35
-        caracs.add(cachel14.getText()); //36
+        caracs.add(cachel11.getText()); //33 il1:256:32:1:l
+        caracs.add(cachel12.getText()); //34 latency il1
+        caracs.add(cachel13.getText()); //35 dl1:64:32:4:1
+        caracs.add(cachel14.getText()); //36 latency dl1
 
-        caracs.add(cachel21.getText()); //37
-        caracs.add(cachel22.getText()); //38
-        caracs.add(cachel23.getText()); //39
-        caracs.add(cachel24.getText()); //40
+        caracs.add(cachel21.getText()); //37 ul2:8192:64:4:l
+        caracs.add(cachel22.getText()); //38 latency 6
+        caracs.add(cachel23.getText()); //39 il2 dl2
+        caracs.add(cachel24.getText()); //40 latency il2
 
-        caracs.add(cache1.getText()); //41
-        caracs.add(cache2.getText()); //42
-        caracs.add("" + (CacheActive.isSelected()));  //43
+        caracs.add(cache1.getText()); //41 flush cache false
+        caracs.add(cache2.getText()); //42 convert false
+        caracs.add("" + (CacheActive.isSelected()));  //43 explore cache
 
-        caracs.add(mem1.getText()); //44
-        caracs.add(mem2.getText()); //45
+        caracs.add(mem1.getText()); //44 latency 18 2
+        caracs.add(mem2.getText()); //45 bus width 8
 
-        caracs.add(tlb1.getText()); //46
-        caracs.add(tlb2.getText()); //47
-        caracs.add(tlb3.getText()); //48
+        caracs.add(tlb1.getText()); //46 itlb:4096:4096:4:l
+        caracs.add(tlb2.getText()); //47 dtlb:4096:4096:4:l
+        caracs.add(tlb3.getText()); //48 latency 70
 
-        caracs.add(args.getText()); //49
+        caracs.add(args.getText()); //49 args 
 
 	if (CacheActive.isSelected()){
 
-	    caracs.add(deltaCache1.getText()); //50
-	    caracs.add(deltaCache2.getText()); //51
+	    caracs.add(deltaCache1.getText()); //50 explore cache
+	    caracs.add(deltaCache2.getText()); //51 explore cache 
 
 	}
 
