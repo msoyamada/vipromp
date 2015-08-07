@@ -35,7 +35,7 @@ public class Ambiente {
     public static String conect1 = "vazio";
     public static String comandoExec = "";
 
-    public static String dir = "/home/vipro/testes";
+    public static String dir = "/home/jcanabarro/testes";
     // Array to store the MinMax for variar method
     public static int[][] minmaxvariar=new int[5][2];
 
@@ -63,7 +63,7 @@ public class Ambiente {
             saida.println("CC  = gcc");
             saida.println("AFLAGS = -Wall -w -g");
             saida.println("#CFLAGS =  ");
-            saida.println("VIPRO_DIR= /home/vipro/vipromp/VIPRO-MPv0.2/VIPRO-MP/");
+            saida.println("VIPRO_DIR= /home/jcanabarro/vipromp/VIPRO-MPv0.2/VIPRO-MP/");
             saida.println("LFLAGS =   -L$(VIPRO_DIR) -L$(VIPRO_DIR)systemc-2.3.1/lib-linux -Wall -w -g -lm -Xlinker -zmuldefs -lpthread");
             saida.println("CXXFLAGS=-g -I$(VIPRO_DIR) -I$(VIPRO_DIR)systemc-2.3.1/include -DSYSTEMC -fpermissive");
             saida.println("MFLAGS = `./sysprobe -flags`");
@@ -153,7 +153,7 @@ public class Ambiente {
 
             writer = new FileWriter(makeFile);
             saida = new PrintWriter(writer);
-            saida.println("export LD_LIBRARY_PATH=/home/vipro/Downloads/systemc-2.3.1/lib-linux:$LD_LIBRARY_PATH");
+            saida.println("export LD_LIBRARY_PATH=/home/jcanabarro/Downloads/systemc-2.3.1/lib-linux:$LD_LIBRARY_PATH");
             int n_procs = 0;
             for (int i = 0; i < compsNaTela.size(); i++) if (compsNaTela.get(i).getCompType().equals("processador")) n_procs++;
 
@@ -870,11 +870,11 @@ public class Ambiente {
 
             try {
 
-                Process ret = Runtime.getRuntime().exec("cp /home/vipro/VIPRO-MPv0.2/VIPRO-MP/input256.ppm " + dir);
+                Process ret = Runtime.getRuntime().exec("cp /home/jcanabarro/VIPRO-MPv0.2/VIPRO-MP/input256.ppm " + dir);
                 ret.waitFor();
-                ret = Runtime.getRuntime().exec("cp /home/vipro/VIPRO-MPv0.2VIPRO-MP/sharedmemory.cpp " + dir);
+                ret = Runtime.getRuntime().exec("cp /home/jcanabarro/VIPRO-MPv0.2VIPRO-MP/sharedmemory.cpp " + dir);
                 ret.waitFor();
-                ret = Runtime.getRuntime().exec("cp /home/vipro/VIPRO-MPv0.2VIPRO-MP/sharedmemory.hpp " + dir);
+                ret = Runtime.getRuntime().exec("cp /home/jcanabarro/VIPRO-MPv0.2VIPRO-MP/sharedmemory.hpp " + dir);
                 ret.waitFor();
 
                 ret.destroy();
@@ -1121,9 +1121,9 @@ public class Ambiente {
     public static String variar(String Comadndo){
 
 
-        newDir("/home/vipro/testes/TestesExaustivos");        
+        newDir("/home/jcanabarro/testes/TestesExaustivos");        
 
-        File outPut = new File("/home/vipro/testes/TestesExaustivos/TempoC.txt");
+        File outPut = new File("/home/jcanabarro/testes/TestesExaustivos/TempoC.txt");
 
         long TempoInicTot = System.currentTimeMillis();
         long TempoInicParc = System.currentTimeMillis();
@@ -1137,7 +1137,7 @@ public class Ambiente {
         double potencia = 0.0;
         double desempenho = 0.0;
 
-        File Log = new File("/home/vipro/testes/TestesExaustivos/dump");
+        File Log = new File("/home/jcanabarro/testes/TestesExaustivos/dump");
         PrintWriter LogOut = null;
 
         OtimaArquitetura.setDesempenho(999999999.9);
@@ -1171,7 +1171,7 @@ public class Ambiente {
 
                             TempoInicParc = System.currentTimeMillis();
                             System.out.println("exec num: " + cont);
-                            newDir("/home/vipro/testes/TestesExaustivos/Saida_" + mem + "_" + unFun + "_" + cacheil + "_" + cachedl + "_" + cont);
+                            newDir("/home/jcanabarro/testes/TestesExaustivos/Saida_" + mem + "_" + unFun + "_" + cacheil + "_" + cachedl + "_" + cont);
 
                             for (int k = 0; k < compsNaTela.size(); k++){
 
@@ -1222,7 +1222,7 @@ public class Ambiente {
 
                             try{
 
-                                dump = new File("/home/vipro/testes/TestesExaustivos/Saida_" + mem + "_" + unFun + "_" + cacheil + "_" + cachedl + "_" + cont + "/dumps");
+                                dump = new File("/home/jcanabarro/testes/TestesExaustivos/Saida_" + mem + "_" + unFun + "_" + cacheil + "_" + cachedl + "_" + cont + "/dumps");
                                 in = new BufferedReader(new FileReader(dump));
                                 //TODO: Fixed number of processors  2!! Must be variable!
                                 for(int procs = 0; procs < 2; procs++){

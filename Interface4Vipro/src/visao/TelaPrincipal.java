@@ -360,13 +360,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
 		if(returnVal == JFileChooser.APPROVE_OPTION) Controlador.controlador(chooser.getSelectedFile() + ":&:newDir");
 		else dir = false;
 
-            } else Controlador.controlador("/home/vipro/testes/Projeto/:&:newDir");
+            } else Controlador.controlador("/home/jcanabarro/testes/Projeto/:&:newDir");
 
         }
 
         if (dir){
 
-            Controlador.controlador("/home/vipro/testes/Projeto/:&:newDir");
+            Controlador.controlador("/home/jcanabarro/testes/Projeto/:&:newDir");
             if (Controlador.controlador("MakeFile").equals("Sucesso")){
 
                 Warnings("Makefile construido com sucesso!", new Color(0, 155, 0));
@@ -631,7 +631,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
 	}
 
-        Controlador.controlador("/home/vipro/testes/Projeto/:&:newDir");
+        Controlador.controlador("/home/jcanabarro/testes/Projeto/:&:newDir");
 
     }//GEN-LAST:event_AbrirProjetoActionPerformed
 

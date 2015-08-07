@@ -5,6 +5,7 @@
 
 package AG;
 
+import static AG.Otimizar.Ele;
 import java.io.*;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -17,10 +18,12 @@ import visao.TelaPrincipal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Vector;
+import java.util.Vector;    
 import java.util.Vector;
 import rna.treinamento.BackPropagationMLP;
 import rna.redes.MLP;
+ import java.text.DecimalFormat; 
+import java.util.StringTokenizer;
 
 // Referenced classes of package AG:
 //            AGconfig
@@ -85,8 +88,8 @@ public class Otimizar
             BackPropagationMLP bcPotencia = new BackPropagationMLP(redePotencia, taxaAprendizagem, momento);
             BackPropagationMLP bcDesempen = new BackPropagationMLP(redeDesempen, taxaAprendizagem, momento);
 
-            //sDir = "/home/pardal/Desktop/AlgoritmosGeneticos/";
-            sDir = "/home/vipro/testes/AlgoritmosGeneticos/";
+            //sDir = "/home/jcanabarro/Desktop/AlgoritmosGeneticos/";
+            sDir = "/home/jcanabarro/testes/AlgoritmosGeneticos/";
 
             
             File Log = new File(sDir + "Log");
@@ -111,6 +114,12 @@ public class Otimizar
             Fitness = new Vector();
             desempenho = 0.0;
             potencia = 0.0;
+            double potmin = 15.0;
+            double potmax = 150.0;
+            double potide; 
+            double desmin = 200000.0;
+            double desmax = 500000.0;
+            double deside;
             double parcial = 0.0;
 
             populacao.add((Vector)compsNaTela.clone());
@@ -129,18 +138,26 @@ public class Otimizar
                     indAux = new Vector((Vector)populacao.get(ind));
                     indAux = new Vector(getFromBD(makeVet(indAux, escreverVet)));
 
-                    if (indAux.size() > 0){
-
-                        potencia = Double.parseDouble(indAux.get(indAux.size() - 2).toString());
-                        desempenho = Double.parseDouble(indAux.get(indAux.size() - 1).toString());
-
-                        LogOut.println("Arquitetura já simulada:");
-                        LogOut.println("Protencia Media......." + potencia);
-                        LogOut.println("Desempenho............" + desempenho);
-                        LogOut.println("Fitness..............." + Math.sqrt(Math.pow(potencia,2) + Math.pow(desempenho,2))+ "\n\n\n");
-                        System.out.println("individuo: " + (ind + 1) + ", fitness:" + (potencia + desempenho) + "\n");                        
+                    if (indAux.size() > 0){   
+                        potide = Double.parseDouble(indAux.get(indAux.size() - 2).toString());
+                        deside = Double.parseDouble(indAux.get(indAux.size() - 1).toString());
                         
-                        Fitness.add(Math.sqrt(Math.pow(potencia,2) + Math.pow(desempenho,2)));
+                        deside = (desempenho-desmin)/(desmax-desmin);
+                        potide = (potencia-potmin)/(potmax-potmin);
+                        DecimalFormat cont = new DecimalFormat("0.######");  
+                              String dpot; 
+                              String dDes;
+                              String dfit;
+                                dpot = cont.format(potide);
+                                dDes = cont.format(deside);
+                                dfit = cont.format(Math.sqrt(Math.pow(potide,2) + Math.pow(deside,2)));
+                        LogOut.println("Arquitetura já simulada:");
+                        LogOut.println("Potencia Media......." + dpot);
+                        LogOut.println("Desempenho............" + dDes);
+                        LogOut.println("Fitness..............." + dfit + "\n\n\n");
+                        System.out.println("individuo: " + (ind + 1) + ", fitness:" + (potide + deside) + "\n");                        
+                        
+                        Fitness.add(Math.sqrt(Math.pow(potide,2) + Math.pow(deside,2)));
                         LogOut.flush();
                         continue;
 
@@ -342,14 +359,23 @@ public class Otimizar
 
                         }
                         // MSO: lets use the distance to origin (0,0) as the fitness function
+                      
+                        deside = (desempenho-desmin)/(desmax-desmin);
+                        potide = (potencia-potmin)/(potmax-potmin);
+                         DecimalFormat cont = new DecimalFormat("0.######");  
+                              String dpot; 
+                              String dDes;
+                              String dfit;
+                                dpot = cont.format(potide);
+                                dDes = cont.format(deside);
+                                dfit = cont.format(Math.sqrt(Math.pow(potide,2) + Math.pow(deside,2)));
                         LogOut.println("Resultados:");
-                        LogOut.println("Protencia Media......." + potencia );
-                        LogOut.println("Desempenho............" + desempenho);
-                        LogOut.println("Fitness..............." + Math.sqrt(Math.pow(potencia,2) + Math.pow(desempenho,2)) + "\n\n\n");
-                        System.out.println("individuo: " + (ind + 1) + ", fitness:" + (potencia + desempenho) + "\n");                        
+                        LogOut.println("Potencia Media Normalizada......." + dpot + " Potencia " + potencia);
+                        LogOut.println("Desempenho Normalizada............" + dDes+ " Desempenho " + desempenho);
+                        LogOut.println("Fitness..............." + dfit + "\n\n\n");
+                        System.out.println("individuo: " + (ind + 1) + ", fitness:" + (potide + deside) + "\n");                        
                         
-                        Fitness.add(Math.sqrt(Math.pow(potencia,2) + Math.pow(desempenho,2)));
-
+                        Fitness.add(Math.sqrt(Math.pow(potide,2) + Math.pow(deside,2)));
                         indAux = new Vector((Vector)populacao.get(ind));
                         arqAux = makeVet(indAux, false);
                         
@@ -460,7 +486,7 @@ public class Otimizar
 
         } catch(IOException e) {
             
-            System.out.println("ERRO em algum lugar aki");
+            System.out.println("ERRO em algum lugar aqui");
             return "ERRO";
 
         } finally {
@@ -527,7 +553,8 @@ public class Otimizar
             //Scalarity
            // proc.getCarac().setElementAt(Ele(5, 1), 19);  // #19 IF queue size 2 to 64
             //MSO: scalarity is the same for ID, II, IC range 1 to 8
-            long scalarity= Ele(3, 0); 
+            long scalarity= Ele(3,0);
+            
             proc.getCarac().setElementAt(scalarity, 21);  // #21 ID size 4
             proc.getCarac().setElementAt(scalarity, 22);  // #22 II size 4
 
@@ -537,8 +564,8 @@ public class Otimizar
                 proc.getCarac().setElementAt("false", 23); // #23 Out-of-order
 
             proc.getCarac().setElementAt(scalarity, 25);  // #25 IC size 4
-            proc.getCarac().setElementAt(Ele(5, 2), 26);  // #26 RUU size 16 range 4 to 128
-            proc.getCarac().setElementAt(Ele(5, 2), 27);  // #27 LS size 16 range 4 to 128
+            proc.getCarac().setElementAt(16, 26);  // #26 RUU size 16 range 4 to 128
+            proc.getCarac().setElementAt(16, 27);  // #27 LS size 16 range 4 to 128
             
             //Functional units
             proc.getCarac().setElementAt(Uni(7, 1), 28); // #28 ALU  1  to 8
@@ -549,7 +576,7 @@ public class Otimizar
 
             
             // cache
-            int par1 = (int) Ele(13, 3); // #blocks range 8 to 64K
+            int par1 = (int) Ele(13,3); // #blocks range 8 to 64K  
             //int par2 = (int) Ele(3, 3);  // # block size 8 to 64
             int par2 = 32;  // # block size fixed to 32
             proc.getCarac().setElementAt("il1:" + par1 + ":" + par2 + ":1:l", 33); //# il1 config
@@ -600,7 +627,19 @@ public class Otimizar
 
         return newInd;
     }
-
+    
+    public static long MID(int pk,int pkl, int pku){
+        double Nm = 1;
+        double rk = 1 + Math.random()*(0 - 1);
+        double omega=0;
+       if(rk<0.5)
+       omega= ((2*rk)*1/(Nm+1)-1);
+       else if (rk>=0.5) {
+        omega =(1-(2*(1-rk))*1/(Nm+1));
+        }
+        return (long) (pk+(pku-pkl)*omega);
+    }
+    
     public static long Ele(int ele, int start){
         return (long)Math.pow(2, (long)start + Math.round(Math.random() * (double)ele));
     }
@@ -699,29 +738,92 @@ public class Otimizar
         Vector newInd = new Vector();
         inScreen proc = new inScreen();
         int Taxa = AGconfig.getMut();
-
-        for(int i = 0; i < ind.size(); i++){
-
-            if(((inScreen)ind.get(i)).getCompType().compareTo("processador") != 0){
-
-                newInd.add(ind.get(i));
+        long sc;
+        long scalarity;
+         long lu;
+                
+        for (Object ind1 : ind) {
+            if (((inScreen) ind1).getCompType().compareTo("processador") != 0) {
+                newInd.add(ind1);
                 continue;
-
             }
+            proc = new inScreen((inScreen) ind1);
+            proc.setCarac(((inScreen) ind1).getCarac());
+            sc = (long)proc.getCarac().get(21);
+             lu = (long)proc.getCarac().get(28);
+             scalarity= MID((int) sc,1,8);
+            
+            proc.getCarac().setElementAt(scalarity, 21);  // #21 ID size 4
+            proc.getCarac().setElementAt(scalarity, 22);  // #22 II size 4
 
-            proc = new inScreen((inScreen)ind.get(i));
-            proc.setCarac(((inScreen)ind.get(i)).getCarac());
+            if(Ele(10, 0)> 4L)
+                proc.getCarac().setElementAt("true", 23);  // #23 In-order
+            else
+                proc.getCarac().setElementAt("false", 23); // #23 Out-of-order
 
+            proc.getCarac().setElementAt(scalarity, 25);  // #25 IC size 4
+            proc.getCarac().setElementAt(16, 26);  // #26 RUU size 16 range 4 to 128
+            proc.getCarac().setElementAt(16, 27);  // #27 LS size 16 range 4 to 128
+            
+            //Functional units
+            lu = MID((int)lu,1,8);
+            proc.getCarac().setElementAt(lu, 28); // #28 ALU  1  to 8
+           // proc.getCarac().setElementAt(Uni(7, 1), 29); // #29 MULT/DIV 1 to 8
+           // proc.getCarac().setElementAt(Uni(1, 1), 30); // #30 MEM ports 2 to 8
+           // proc.getCarac().setElementAt(Uni(7, 1), 31); // #31 FP 1 to 8
+           // proc.getCarac().setElementAt(Uni(7, 1), 32); // #32 FP Mult 1 to 8
+
+            
+            // cache
+            int at = 0;
+            String c=(String) proc.getCarac().get(33);
+            String[] result = c.split(":");
+            for (String result1 : result) {
+                 at = Integer.parseInt(result[1]);
+            }
+            int par1 = (int) MID(at,8,64); // #blocks range 8 to 64K
+            
+            //int par2 = (int) Ele(3, 3);  // # block size 8 to 64
+            int par2 = 32;  // # block size fixed to 32
+            
+            proc.getCarac().setElementAt("il1:" + par1 + ":" + par2 + ":1:l", 33); //# il1 config
+            /*while ((par1 * par2) > 4194304){  
+
+                par1 = (int) Ele(13, 3);
+                par2 = (int) Ele(3, 3);
+
+                proc.getCarac().setElementAt("il1:" + par1 + ":" + par2 + ":1:l", 33);
+
+            }*/
+            // cache associativity
+            int dl;
+            /*dl = (int) Math.round(Math.random());
+            if (dl == 0) dl = 1;
+            else dl = 4;*/
+            dl= 4; // MSO fixed to 4
+            int CA=0;
+             String s=(String) proc.getCarac().get(35);
+              String[] result2 = s.split(":");
+            for (String result1 : result2) {
+                 CA = Integer.parseInt(result2[1]);
+            }
+            par1 = (int) MID(CA,8, 64); // #blocks
+            //par2 = (int) Ele(3, 3);  // # block size
+            par2 = 32;  // # block size fixed to 32
+            
+            proc.getCarac().setElementAt("dl1:" + par1 + ":" + par2 + ":" + dl + ":l", 35);
+            
+            /*
             if(Math.random() * 100D < (double)Taxa)
                 proc.getCarac().setElementAt(Long.valueOf(Ele(7, 5)), 13);
             if(Math.random() * 100D < (double)Taxa)
                 proc.getCarac().setElementAt((new StringBuilder()).append(Ele(7, 5)).append(" ").append(Ele(2, 0)).toString(), 17);
             if(Math.random() * 100D < (double)Taxa)
-                proc.getCarac().setElementAt(Long.valueOf(Ele(6, 0)), 19);
+                proc.getCarac().setElementAt(Ele(6, 0), 19);
             if(Math.random() * 100D < (double)Taxa)
-                proc.getCarac().setElementAt(Long.valueOf(Ele(6, 0)), 21);
+                proc.getCarac().setElementAt(Ele(6, 0), 21);
             if(Math.random() * 100D < (double)Taxa)
-                proc.getCarac().setElementAt(Long.valueOf(Ele(6, 0)), 22);
+                proc.getCarac().setElementAt(Ele(6, 0), 22);
             if(Math.random() * 100D < (double)Taxa)
                 if(Ele(10, 0)> 4L)
                     proc.getCarac().setElementAt("true", 23);
@@ -743,19 +845,17 @@ public class Otimizar
                 proc.getCarac().setElementAt(Long.valueOf(Uni(7, 1)), 31);
             if(Math.random() * 100D < (double)Taxa)
                 proc.getCarac().setElementAt(Long.valueOf(Uni(7, 1)), 32);
-
             int par1 = 0;
             int par2 = 0;
-
             if(Math.random() * 100D < (double)Taxa){
                 
                 par1 = (int) Ele(13, 3);
                 par2 = (int) Ele(3, 3);
-            
+                
                 proc.getCarac().setElementAt("il1:" + par1 + ":" + par2 + ":1:l", 33);            
                 while ((par1 * par2) > 4194304){
             
-                    par1 = (int) Ele(13, 3);
+                    par1 = (int) Ele(13,3);
                     par2 = (int) Ele(3, 3);
             
                     proc.getCarac().setElementAt("il1:" + par1 + ":" + par2 + ":1:l", 33);
@@ -763,27 +863,23 @@ public class Otimizar
                 }
                 
             }
-
-
-
-
             if(Math.random() * 100D < (double)Taxa){
-             
+                
                 int dl = (int) Math.round(Math.random());            
                 if (dl == 0) dl = 1;
-                else dl = 4;            
-
+                else dl = 4;
+                
                 par1 = (int) Ele(13, 3);
                 par2 = (int) Ele(3, 3);
 
                 proc.getCarac().setElementAt("dl1:" + par1 + ":" + par2 + ":" + dl + ":l", 35);
 
                 while ((par1 * par2 * dl) > 4194304){
-
+                    
                     dl = (int) Math.round(Math.random());            
                     if (dl == 0) dl = 1;
-                    else dl = 4;            
-
+                    else dl = 4;
+                    
                     par1 = (int) Ele(13, 3);
                     par2 = (int) Ele(3, 3);
 
@@ -792,8 +888,6 @@ public class Otimizar
                 }
                 
             }
-
-
             if(Math.random() * 100D < (double)Taxa)
                 proc.getCarac().setElementAt((new StringBuilder()).append(Duni(10, 8)).append(" 2").toString(), 44);
             if(Math.random() * 100D < (double)Taxa)
@@ -801,7 +895,7 @@ public class Otimizar
             if(Math.random() * 100D < (double)Taxa)
                 proc.getCarac().setElementAt((new StringBuilder()).append("dtlb1:").append(Ele(6, 8)).append(":4096:4:l").toString(), 47);
             if(Math.random() * 100D < (double)Taxa)
-                proc.getCarac().setElementAt(Long.valueOf(Uni(50, 50)), 48);
+                proc.getCarac().setElementAt(Long.valueOf(Uni(50, 50)), 48);*/
             newInd.add(proc);
         }
 
